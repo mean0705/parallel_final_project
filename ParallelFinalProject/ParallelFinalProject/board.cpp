@@ -12,6 +12,7 @@ int board_init()
 	hply = 0;
 	castle |= char(15); // four castle ways
 
+
 	for (int i = 0; i < 64; ++i) {
 		board[BColor][i] = init_color[i];
 		board[BPiece][i] = init_piece[i];
@@ -360,13 +361,22 @@ void generateMove()
 
 					if (board[BColor][square - 8] == NONE) {
 						push_moveable_piece(square, (square - 8), NONE, NONE, false, false, true, false);
-						if (board[BPiece][square - 16] && square >= 48) {
-							push_moveable_piece(square, (square - 16), NONE, NONE, false, false, true, true);
+						if (board[BPiece][square - 16] == NONE && square >= 48) { // I modify here as NONE
+							push_moveable_piece(square, (square - 16), NONE, NONE, false, false, true, true); 
 						}
 					}
 
+					// en passant moves NOT YET : ( whether 2-way or not )
+					if (COL(square) == 4 && ROW(square) != 0 && board[BColor][square - 1] == BLACK && board[BPiece][square - 1] == PAWN ) {
+						push_moveable_piece(square, (square - 9), NONE, NONE, false, true, true, false); // bool capture, bool en_capture, bool pawn, bool pawn2
+					} // if
+
+					if (COL(square) == 4 && ROW(square) != 7 && board[BColor][square + 1] == BLACK && board[BPiece][square + 1] == PAWN) {
+						push_moveable_piece(square, (square - 7), NONE, NONE, false, true, true, false);
+					} // if
+
 				}
-				else {
+				else { // side : BLACK
 					if (COL(square) != 0 && board[BColor][square + 7] == WHITE) {
 						push_moveable_piece(square, (square + 7), NONE, NONE, true, false, true, false);
 					}
@@ -381,6 +391,15 @@ void generateMove()
 						}
 					}
 
+					// en passant moves
+					if (COL(square) == 5 && ROW(square) != 0 && board[BColor][square - 1] == WHITE && board[BPiece][square - 1] == PAWN) {
+						push_moveable_piece(square, (square + 7), NONE, NONE, false, true, true, false);
+					} // if
+
+					if (COL(square) == 5 && ROW(square) != 7 && board[BColor][square + 1] == WHITE && board[BPiece][square + 1] == PAWN) {
+						push_moveable_piece(square, (square + 9), NONE, NONE, false, true, true, false);
+					} // if
+
 				}
 
 			}
@@ -393,12 +412,36 @@ void push_moveable_piece(int from, int to, int promote, int castle, bool capture
 
 	// white pawn move to promote
 	if (to < 8 && pawn) {
+		for (int i = 0; i < 4; i++) {
+			MoveByte_set* g = &gen_dat[first_move[ply + 1]++];
+			g->movebyte.from = from;
+			g->movebyte.to = to;
+		    g->movebyte.promote = i + 2; // QUEEN 2 BISHOP 3 KNIGHT 4 ROOK 5
+			g->movebyte.legal = true;
+			g->score = 0;
+			g->score = 1000000 + (board[BPiece][to] * 10) - board[BPiece][from];
+			// update board
+		} // for
 
+		return;
 	}
+
 	// black pawn move to promote
 	if (to >= 56 && pawn) {
+		for (int i = 0; i < 4; i++) {
+			MoveByte_set* g = &gen_dat[first_move[ply + 1]++];
+			g->movebyte.from = from;
+			g->movebyte.to = to;
+			g->movebyte.promote = i + 2; // QUEEN 2 BISHOP 3 KNIGHT 4 ROOK 5
+			g->movebyte.legal = true;
+			g->score = 0;
+			g->score = 1000000 + (board[BPiece][to] * 10) - board[BPiece][from];
+			// update board
+		} // for
 
+		return;
 	}
+
 
 	MoveByte_set* g = &gen_dat[first_move[ply+1]++];
 	g->movebyte.from = from;

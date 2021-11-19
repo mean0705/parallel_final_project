@@ -1,3 +1,9 @@
 ﻿  board.cpp
-C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\ParallelFinalProject\Def.h(2,17): warning C4081: 必須是 '('，但卻找到 'newline'
-  ParallelFinalProject.vcxproj -> C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\Debug\ParallelFinalProject.exe
+D:\NYCU_Master\Parrallel Programming\Final\parallel_final_project\ParallelFinalProject\ParallelFinalProject\Def.h(2,17): warning C4081: 必須是 '('，但卻找到 'newline'
+  DATA.cpp
+D:\NYCU_Master\Parrallel Programming\Final\parallel_final_project\ParallelFinalProject\ParallelFinalProject\Def.h(2,17): warning C4081: 必須是 '('，但卻找到 'newline'
+  main.cpp
+D:\NYCU_Master\Parrallel Programming\Final\parallel_final_project\ParallelFinalProject\ParallelFinalProject\Def.h(2,17): warning C4081: 必須是 '('，但卻找到 'newline'
+  正在產生程式碼...
+  search.c
+  ParallelFinalProject.vcxproj -> D:\NYCU_Master\Parrallel Programming\Final\parallel_final_project\ParallelFinalProject\Debug\ParallelFinalProject.exe
