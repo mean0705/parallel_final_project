@@ -16,23 +16,25 @@ int main()
 	xside = COMPUTER_SIDE;
 	board_init();
 	generateMove();
+	// side = PLAYER_SIDE;
+	// xside = COMPUTER_SIDE;
 	while (true) {
 		
-		if (side == COMPUTER_SIDE || AUTO) {
-			// time start;
-			//move = search();
-			//if (move == NULL) {
-			//	printf("no legal move\n");
+		//if (side == COMPUTER_SIDE || AUTO) {
+		//	// time start;
+		//	//move = search();
+		//	//if (move == NULL) {
+		//	//	printf("no legal move\n");
+		//
+		//	//	// initial a board
+		//	//	init();
+		//	//}
+		//	// time end;
+		//
+		//	//make(move);
+		//}
 
-			//	// initial a board
-			//	init();
-			//}
-			// time end;
-
-			//make(move);
-		}
-
-		else {
+		if( 1 ) {
 			printf("command : ");
 			cin >> s;
 
@@ -85,9 +87,15 @@ int main()
 				else {
 					bool moveLegal = makeMove(move);
 					ply = 0;
+					// side = COMPUTER_SIDE;
+					// xside = PLAYER_SIDE;
+					int temp = 0;
+					temp = side;
+					side = xside;
+					xside = temp;
 					generateMove();
-					//side = COMPUTER_SIDE;
-					//xside = PLAYER_SIDE;
+					
+					
 				}
 			}
 			

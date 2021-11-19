@@ -12,7 +12,6 @@ int board_init()
 	hply = 0;
 	castle |= char(15); // four castle ways
 
-
 	for (int i = 0; i < 64; ++i) {
 		board[BColor][i] = init_color[i];
 		board[BPiece][i] = init_piece[i];
@@ -88,13 +87,14 @@ int board_print(int board_[2][64])
 		}
 		cout << "\n";
 	}
+
 	return 0;
 }
 
 MoveByte ReadMove(string s) {
 	MoveByte mb;
-	int from, to, piece, promote;
-	mb.from = mb.to = mb.promote =  NONE; mb.legal = false;
+	int from, to, piece, promote, color;
+	mb.from = mb.to = mb.promote = NONE; mb.legal = false; mb.pawn2 = false;
 
 	if (s.length() < 4) {
 		return mb;
@@ -110,6 +110,7 @@ MoveByte ReadMove(string s) {
 		promote = -1;
 		//cout << convertIndex2Readible(from) << ", " << convertIndex2Readible(to) << endl;
 		piece = board[BPiece][from];
+		color = board[BColor][from];
 		if (s.length() == 5) {
 			if (s[4] == 'r') {
 				promote = ROOK;
@@ -128,15 +129,23 @@ MoveByte ReadMove(string s) {
 
 		//cout << "first Move Num " << first_move[1] << endl;
 		for (int i = 0; i < first_move[1]; ++i) {
-			
+			// cout << convertIndex2Readible(from) << ", " << convertIndex2Readible(to) << endl;
 			if (gen_dat[i].movebyte.from == from && gen_dat[i].movebyte.to == to) {
-
+				cout << "all : " << convertIndex2Readible(from) << ", " << convertIndex2Readible(to) << endl;
 				mb.from = from;
 				mb.to = to;
 				mb.promote = promote;
 				mb.castle = gen_dat[i].movebyte.castle;
 				mb.en_capture = gen_dat[i].movebyte.en_capture;
 				mb.legal = 1;
+				mb.pawn2 = false;
+
+				// if ( piece == PAWN ) mb.pawn2 = true;
+				if (piece == PAWN && (from - to == 16))
+					mb.pawn2 = true;
+				if (piece == PAWN && (to - from == 16) )
+				    mb.pawn2 = true;				
+
 				return mb;
 			}
 		}
@@ -149,10 +158,11 @@ bool makeMove(MoveByte moveByte)
 {
 	int from = moveByte.from;
 	int to = moveByte.to;
-
+	
 	bool Pass = false;
 	//int piece = board[BPiece][moveByte.from];
-	int color = board[BColor][moveByte.from];
+	int color = board[BColor][moveByte.from];	
+
 
 	if (board[BPiece][from] == ROOK) {
 		if (from == H1) {
@@ -202,19 +212,38 @@ bool makeMove(MoveByte moveByte)
 		}
 	}
 
+	if (board[BPiece][from] == PAWN && board[BPiece][to] == NONE && board[BColor][from] == WHITE) {
+		board[BPiece][to + 8] == NONE;
+		board[BColor][to + 8] == NONE;
+	} // if : en passant move
+
+	if (board[BPiece][from] == PAWN && board[BPiece][to] == NONE && board[BColor][from] == BLACK) {
+		board[BPiece][to - 8] == NONE;
+		board[BColor][to - 8] == NONE;
+	} // if : en passant move : not yet
+
 		board[BPiece][moveByte.to] = board[BPiece][moveByte.from];
 		board[BColor][moveByte.to] = side;
 
 		board[BPiece][moveByte.from] = NONE;
 		board[BColor][moveByte.from] = NONE;
+		
+
+	
 	
 
 	// backup history
 	for (int i = 0; i < 2; i++) {
 		for (int j = 0; j < 64; j++) {
-			history[hply].board[i][j] = board[i][j];
+			history[hply].board[i][j] = board[i][j];			
 		}
 	}
+	if (moveByte.pawn2) {
+		cout << "en : " << convertIndex2Readible(from) << ", " << convertIndex2Readible(to) << endl;
+		history[hply].ep = to;
+	} // if				
+	else history[hply].ep = -1;
+
 	history[hply].castle = castle;
 
 	hply++;
@@ -228,6 +257,8 @@ void generateMove()
 	board_print(board);
 	first_move[ply + 1] = first_move[ply];
 	PreComputeMove();
+	cout << "side : " << side << endl;
+	cout << "xside : " << xside << endl;
 	for (int square = 0; square < 64; ++square) {
 		if (board[BColor][square] == side) {
 			// handle queen | rook | bishop
@@ -310,7 +341,7 @@ void generateMove()
 						//else
 						if (board[BColor][F1] == NONE && board[BColor][G1] == NONE) {
 							push_moveable_piece(square, G1, false, 1, false, false, false, false);
-							//cout << board[BPiece][square] << "  , " << convertIndex2Readible(G1) << endl;
+							// cout << board[BPiece][square] << "  , " << convertIndex2Readible(G1) << endl;
 						}
 					}
 					// left
@@ -330,7 +361,7 @@ void generateMove()
 						//else
 						if (board[BColor][F7] == NONE && board[BColor][G7] == NONE) {
 							push_moveable_piece(square, G7, false, 4, false, false, false, false);
-							//cout << board[BPiece][square] << "  , " << convertIndex2Readible(G7) << endl;
+							// cout << board[BPiece][square] << "  , " << convertIndex2Readible(G7) << endl;
 						}
 					}
 					// left
@@ -349,7 +380,8 @@ void generateMove()
 			// TODO
 
 			// handle pawn
-
+			int ep = history[hply - 1].ep;
+			cout << "ep : " << ep;
 			if (board[BPiece][square] == PAWN) {
 				if (side == WHITE) {
 					if (COL(square) != 0 && board[BColor][square - 9] == BLACK) {
@@ -361,19 +393,29 @@ void generateMove()
 
 					if (board[BColor][square - 8] == NONE) {
 						push_moveable_piece(square, (square - 8), NONE, NONE, false, false, true, false);
-						if (board[BPiece][square - 16] == NONE && square >= 48) { // I modify here as NONE
+						if (board[BPiece][square - 16] && square >= 48) { 
 							push_moveable_piece(square, (square - 16), NONE, NONE, false, false, true, true); 
 						}
 					}
 
-					// en passant moves NOT YET : ( whether 2-way or not )
-					if (COL(square) == 4 && ROW(square) != 0 && board[BColor][square - 1] == BLACK && board[BPiece][square - 1] == PAWN ) {
-						push_moveable_piece(square, (square - 9), NONE, NONE, false, true, true, false); // bool capture, bool en_capture, bool pawn, bool pawn2
+					
+					if (ep != -1) {
+						if (square - 1 == ep) {
+							push_moveable_piece(square, (square - 9), NONE, NONE, false, true, true, false);
+						} // if
+						if (square + 1 == ep) {
+							push_moveable_piece(square, (square - 7), NONE, NONE, false, true, true, false);
+						} // if					
 					} // if
 
-					if (COL(square) == 4 && ROW(square) != 7 && board[BColor][square + 1] == BLACK && board[BPiece][square + 1] == PAWN) {
-						push_moveable_piece(square, (square - 7), NONE, NONE, false, true, true, false);
-					} // if
+					// // en passant moves NOT YET : ( whether 2-way or not ) history[hply-1].ep
+					// if (COL(square) == 4 && ROW(square) != 0 && board[BColor][square - 1] == BLACK && board[BPiece][square - 1] == PAWN ) {
+					// 	push_moveable_piece(square, (square - 9), NONE, NONE, false, true, true, false); // bool capture, bool en_capture, bool pawn, bool pawn2
+					// } // if
+					// 
+					// if (COL(square) == 4 && ROW(square) != 7 && board[BColor][square + 1] == BLACK && board[BPiece][square + 1] == PAWN) {
+					// 	push_moveable_piece(square, (square - 7), NONE, NONE, false, true, true, false);
+					// } // if
 
 				}
 				else { // side : BLACK
@@ -391,14 +433,23 @@ void generateMove()
 						}
 					}
 
-					// en passant moves
-					if (COL(square) == 5 && ROW(square) != 0 && board[BColor][square - 1] == WHITE && board[BPiece][square - 1] == PAWN) {
-						push_moveable_piece(square, (square + 7), NONE, NONE, false, true, true, false);
+					if (ep != -1) {
+						if (square - 1 == ep) {
+							push_moveable_piece(square, (square + 7), NONE, NONE, false, true, true, false);
+						} // if
+						if (square + 1 == ep) {
+							push_moveable_piece(square, (square + 9), NONE, NONE, false, true, true, false);
+						} // if					
 					} // if
 
-					if (COL(square) == 5 && ROW(square) != 7 && board[BColor][square + 1] == WHITE && board[BPiece][square + 1] == PAWN) {
-						push_moveable_piece(square, (square + 9), NONE, NONE, false, true, true, false);
-					} // if
+					// // en passant moves
+					// if (COL(square) == 5 && ROW(square) != 0 && board[BColor][square - 1] == WHITE && board[BPiece][square - 1] == PAWN) {
+					// 	push_moveable_piece(square, (square + 7), NONE, NONE, false, true, true, false);
+					// } // if
+					// 
+					// if (COL(square) == 5 && ROW(square) != 7 && board[BColor][square + 1] == WHITE && board[BPiece][square + 1] == PAWN) {
+					// 	push_moveable_piece(square, (square + 9), NONE, NONE, false, true, true, false);
+					// } // if
 
 				}
 
@@ -409,7 +460,6 @@ void generateMove()
 }
 
 void push_moveable_piece(int from, int to, int promote, int castle, bool capture, bool en_capture, bool pawn, bool pawn2) {
-
 	// white pawn move to promote
 	if (to < 8 && pawn) {
 		for (int i = 0; i < 4; i++) {
