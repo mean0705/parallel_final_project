@@ -131,7 +131,7 @@ MoveByte ReadMove(string s) {
 		for (int i = 0; i < first_move[1]; ++i) {
 			// cout << convertIndex2Readible(from) << ", " << convertIndex2Readible(to) << endl;
 			if (gen_dat[i].movebyte.from == from && gen_dat[i].movebyte.to == to) {
-				cout << "all : " << convertIndex2Readible(from) << ", " << convertIndex2Readible(to) << endl;
+				// cout << "all : " << convertIndex2Readible(from) << ", " << convertIndex2Readible(to) << endl;
 				mb.from = from;
 				mb.to = to;
 				mb.promote = promote;
@@ -239,7 +239,7 @@ bool makeMove(MoveByte moveByte)
 		}
 	}
 	if (moveByte.pawn2) {
-		cout << "en : " << convertIndex2Readible(from) << ", " << convertIndex2Readible(to) << endl;
+		// cout << "en : " << convertIndex2Readible(from) << ", " << convertIndex2Readible(to) << endl;
 		history[hply].ep = to;
 	} // if				
 	else history[hply].ep = -1;
@@ -257,8 +257,8 @@ void generateMove()
 	board_print(board);
 	first_move[ply + 1] = first_move[ply];
 	PreComputeMove();
-	cout << "side : " << side << endl;
-	cout << "xside : " << xside << endl;
+	// cout << "side : " << side << endl;
+	// cout << "xside : " << xside << endl;
 	for (int square = 0; square < 64; ++square) {
 		if (board[BColor][square] == side) {
 			// handle queen | rook | bishop
@@ -381,7 +381,7 @@ void generateMove()
 
 			// handle pawn
 			int ep = history[hply - 1].ep;
-			cout << "ep : " << ep;
+			// cout << "ep : " << ep;
 			if (board[BPiece][square] == PAWN) {
 				if (side == WHITE) {
 					if (COL(square) != 0 && board[BColor][square - 9] == BLACK) {

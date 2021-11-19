@@ -1,7 +1,7 @@
 ﻿  board.cpp
 D:\NYCU_Master\Parrallel Programming\Final\parallel_final_project\ParallelFinalProject\ParallelFinalProject\Def.h(2,17): warning C4081: 必須是 '('，但卻找到 'newline'
-D:\NYCU_Master\Parrallel Programming\Final\parallel_final_project\ParallelFinalProject\ParallelFinalProject\board.cpp(218,25): warning C4553: '==': 未使用運算式結果; 您是否想要 '='?
-D:\NYCU_Master\Parrallel Programming\Final\parallel_final_project\ParallelFinalProject\ParallelFinalProject\board.cpp(219,25): warning C4553: '==': 未使用運算式結果; 您是否想要 '='?
-D:\NYCU_Master\Parrallel Programming\Final\parallel_final_project\ParallelFinalProject\ParallelFinalProject\board.cpp(225,25): warning C4553: '==': 未使用運算式結果; 您是否想要 '='?
-D:\NYCU_Master\Parrallel Programming\Final\parallel_final_project\ParallelFinalProject\ParallelFinalProject\board.cpp(226,25): warning C4553: '==': 未使用運算式結果; 您是否想要 '='?
+D:\NYCU_Master\Parrallel Programming\Final\parallel_final_project\ParallelFinalProject\ParallelFinalProject\board.cpp(216,25): warning C4553: '==': 未使用運算式結果; 您是否想要 '='?
+D:\NYCU_Master\Parrallel Programming\Final\parallel_final_project\ParallelFinalProject\ParallelFinalProject\board.cpp(217,25): warning C4553: '==': 未使用運算式結果; 您是否想要 '='?
+D:\NYCU_Master\Parrallel Programming\Final\parallel_final_project\ParallelFinalProject\ParallelFinalProject\board.cpp(221,25): warning C4553: '==': 未使用運算式結果; 您是否想要 '='?
+D:\NYCU_Master\Parrallel Programming\Final\parallel_final_project\ParallelFinalProject\ParallelFinalProject\board.cpp(222,25): warning C4553: '==': 未使用運算式結果; 您是否想要 '='?
   ParallelFinalProject.vcxproj -> D:\NYCU_Master\Parrallel Programming\Final\parallel_final_project\ParallelFinalProject\Debug\ParallelFinalProject.exe
